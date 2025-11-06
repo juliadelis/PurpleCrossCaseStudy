@@ -144,7 +144,7 @@ export default {
   padding: 24px 28px;
   border-radius: 8px;
   width: 400px;
-  height: 80vh;
+  max-height: 80vh;
   display: flex;
   flex-direction: column;
 }
@@ -218,7 +218,7 @@ input.error {
 
 @media (max-width: 768px) {
   .modal-overlay {
-    padding: 20px 0;
+    padding: 0px 20px;
   }
 }
 </style>

@@ -17,7 +17,7 @@
             :data-label="col.label">
             {{ row[col.field] }}
           </td>
-          <td class="actions" data-label="Actions">
+          <td data-label="Actions">
             <div class="action-btns">
               <button class="action-btn view" @click="$emit('view', row)">
                 View
@@ -139,13 +139,6 @@ export default {
 
 .actions-header {
   text-align: center;
-}
-
-.actions {
-  display: flex;
-  gap: 8px;
-  justify-content: flex-start;
-  margin-bottom: -1px;
 }
 
 .action-btns {

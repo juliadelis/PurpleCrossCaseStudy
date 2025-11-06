@@ -92,7 +92,7 @@ export default {
   gap: 12px;
   flex-direction: column;
   width: 400px;
-  height: 80vh;
+  max-height: 80vh;
   display: flex;
   flex-direction: column;
 }
@@ -132,6 +132,7 @@ p {
 .title {
   font-weight: bold;
   color: #6007a5;
+  min-width: 120px;
 }
 
 .actions {
@@ -161,7 +162,7 @@ p {
 
 @media (max-width: 768px) {
   .modal-overlay {
-    padding: 20px 0;
+    padding: 0px 20px;
   }
 }
 </style>
