@@ -57,6 +57,7 @@
     <ul v-if="showSortMenu" class="menu" :style="menuStyle(sortMenuPos)">
       <li @click.stop="setSort('asc')">A - Z</li>
       <li @click.stop="setSort('desc')">Z - A</li>
+      <li class="muted" @click.stop="setSort(null)">Reset Order</li>
     </ul>
   </div>
 
@@ -109,7 +110,7 @@ export default {
       filterColumn: null,
       filterValue: null,
       sortField: "fullName",
-      sortDirection: "asc",
+      sortDirection: null,
 
       showDeleteConfirm: false,
       rowPendingDelete: null,
@@ -128,13 +129,16 @@ export default {
         rows = rows.filter((r) => String(r[f]) === String(this.filterValue));
       }
 
-      const dir = this.sortDirection === "asc" ? 1 : -1;
-      const field = this.sortField;
-      rows.sort((a, b) => {
-        const av = String(a[field] ?? "");
-        const bv = String(b[field] ?? "");
-        return av.localeCompare(bv) * dir;
-      });
+      if (this.sortDirection) {
+        const dir = this.sortDirection === "asc" ? 1 : -1;
+        const field = this.sortField;
+        rows.sort(
+          (a, b) =>
+            String(a[field] ?? "").localeCompare(String(b[field] ?? "")) * dir
+        );
+      } else {
+        rows.sort((a, b) => a.originalIndex - b.originalIndex);
+      }
 
       return rows;
     },
@@ -150,7 +154,7 @@ export default {
     formatEmployeeData(data) {
       const today = new Date().setHours(0, 0, 0, 0);
 
-      return data.map((emp) => {
+      return data.map((emp, index) => {
         const employmentDate = new Date(emp.dateOfEmployment).setHours(
           0,
           0,
@@ -163,6 +167,8 @@ export default {
 
         return {
           ...emp,
+          originalIndex: index,
+
           dateOfEmployment:
             employmentDate > today ? "Employed soon" : "Currently employed",
 
