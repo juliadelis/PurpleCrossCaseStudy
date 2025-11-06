@@ -74,6 +74,12 @@
     @confirm="confirmDelete"
     @cancel="showDeleteConfirm = false" />
 
+  <ViewEmployeeModal
+    v-if="showEmployeeViewModal"
+    :employee="employeeToView"
+    @edit="handleEdit"
+    @cancel="showEmployeeViewModal = false" />
+
   <EmployeeFormModal
     v-if="showEmployeeForm"
     :employee="employeeToEdit"
@@ -98,10 +104,17 @@ import Table from "./components/Table.vue";
 import employeeData from "./data/purple_cross_employees.json";
 import ConfirmDeleteModal from "./components/ConfirmDelete.vue";
 import EmployeeFormModal from "./components/EmployeeForm.vue";
+import ViewEmployeeModal from "./components/ViewEmployee.vue";
 
 export default {
   name: "App",
-  components: { Navbar, Table, ConfirmDeleteModal, EmployeeFormModal },
+  components: {
+    Navbar,
+    Table,
+    ConfirmDeleteModal,
+    EmployeeFormModal,
+    ViewEmployeeModal,
+  },
   data() {
     return {
       employeesData: this.formatEmployeeData(employeeData),
@@ -130,6 +143,9 @@ export default {
 
       showEmployeeForm: false,
       employeeToEdit: null,
+
+      showEmployeeViewModal: false,
+      employeeToView: null,
     };
   },
   computed: {
@@ -265,7 +281,8 @@ export default {
 
     //buttons behavior
     handleView(row) {
-      console.log("Viewing:", row);
+      this.employeeToView = row;
+      this.showEmployeeViewModal = true;
     },
     handleEdit(row) {
       this.openEditForm(row);
@@ -299,10 +316,12 @@ export default {
     openAddForm() {
       this.employeeToEdit = null;
       this.showEmployeeForm = true;
+      this.showEmployeeViewModal = false;
     },
     openEditForm(row) {
       this.employeeToEdit = row;
       this.showEmployeeForm = true;
+      this.showEmployeeViewModal = false;
     },
     saveEmployee(data) {
       const today = new Date().setHours(0, 0, 0, 0);
