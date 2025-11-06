@@ -66,6 +66,11 @@
       <button class="chip-close" @click="clearFilter">✕</button>
     </div>
   </div>
+  <ConfirmDeleteModal
+    v-if="showDeleteConfirm"
+    :itemName="rowPendingDelete?.fullName"
+    @confirm="confirmDelete"
+    @cancel="showDeleteConfirm = false" />
   <Table
     :columns="tableColumns"
     :data="processedData"
@@ -78,10 +83,11 @@
 import Navbar from "./components/NavBar.vue";
 import Table from "./components/Table.vue";
 import employeeData from "./data/purple_cross_employees.json";
+import ConfirmDeleteModal from "./components/ConfirmDelete.vue";
 
 export default {
   name: "App",
-  components: { Navbar, Table },
+  components: { Navbar, Table, ConfirmDeleteModal },
   data() {
     return {
       employeesData: this.formatEmployeeData(employeeData),
@@ -104,6 +110,9 @@ export default {
       filterValue: null,
       sortField: "fullName",
       sortDirection: "asc",
+
+      showDeleteConfirm: false,
+      rowPendingDelete: null,
     };
   },
   computed: {
@@ -237,7 +246,17 @@ export default {
       console.log("Editing:", row);
     },
     handleDelete(row) {
-      console.log("Deleting:", row);
+      this.rowPendingDelete = row;
+      this.showDeleteConfirm = true;
+    },
+
+    confirmDelete() {
+      this.employeesData = this.employeesData.filter(
+        (emp) => emp !== this.rowPendingDelete
+      );
+
+      this.rowPendingDelete = null;
+      this.showDeleteConfirm = false;
     },
 
     handleClickOutside(e) {
