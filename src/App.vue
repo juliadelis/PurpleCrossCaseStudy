@@ -203,7 +203,11 @@ export default {
           rawTerminationDate: terminationDateRaw,
 
           dateOfEmployment:
-            employmentDate > today ? "Employed soon" : "Currently employed",
+            terminationDate !== null && terminationDate <= today
+              ? "Terminated"
+              : employmentDate > today
+              ? "Employed soon"
+              : "Currently employed",
 
           terminationDate:
             terminationDate === null
