@@ -55,8 +55,32 @@
     </ul>
 
     <ul v-if="showSortMenu" class="menu" :style="menuStyle(sortMenuPos)">
-      <li @click.stop="setSort('asc')">A - Z</li>
-      <li @click.stop="setSort('desc')">Z - A</li>
+      <li @click.stop="setSort('asc')" class="sortCheck">
+        A - Z
+        <svg
+          v-if="sortDirection === 'asc'"
+          class="check"
+          viewBox="0 0 25 19"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M8.16394 14.1684L2.45248 8.5424L0 10.9582L8.16394 19L25 2.41579L22.5475 0L8.16394 14.1684Z"
+            fill="currentColor" />
+        </svg>
+      </li>
+      <li @click.stop="setSort('desc')" class="sortCheck">
+        Z - A
+        <svg
+          v-if="sortDirection === 'desc'"
+          class="check"
+          viewBox="0 0 25 19"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M8.16394 14.1684L2.45248 8.5424L0 10.9582L8.16394 19L25 2.41579L22.5475 0L8.16394 14.1684Z"
+            fill="currentColor" />
+        </svg>
+      </li>
       <li class="muted" @click.stop="setSort(null)">Reset Order</li>
     </ul>
   </div>
@@ -126,24 +150,35 @@ export default {
         { label: "Termination Date ", field: "terminationDate" },
       ],
 
+      // Filter menu
       showFilterMenu: false,
       showValueMenu: false,
+      // Sort menu
       showSortMenu: false,
+      // Filter menu position
       filterMenuPos: { x: 0, y: 0 },
+      // Filter submenu position
       valueMenuPos: { y: 0 },
+      // Sort menu position
       sortMenuPos: { x: 0, y: 0 },
 
+      //Filter values
       filterColumn: null,
       filterValue: null,
+
+      //Field directive to sort
       sortField: "fullName",
       sortDirection: null,
 
+      // Employee Delete Modal
       showDeleteConfirm: false,
       rowPendingDelete: null,
 
+      // Employee Edit Modal
       showEmployeeForm: false,
       employeeToEdit: null,
 
+      // Employee View Modal
       showEmployeeViewModal: false,
       employeeToView: null,
     };
@@ -468,9 +503,15 @@ export default {
 }
 
 .check {
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
   color: #6007a5;
+}
+
+.sortCheck {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .create-employee {
