@@ -67,17 +67,29 @@
       <button class="chip-close" @click="clearFilter">✕</button>
     </div>
   </div>
+
   <ConfirmDeleteModal
     v-if="showDeleteConfirm"
     :itemName="rowPendingDelete?.fullName"
     @confirm="confirmDelete"
     @cancel="showDeleteConfirm = false" />
+
+  <EmployeeFormModal
+    v-if="showEmployeeForm"
+    :employee="employeeToEdit"
+    @save="saveEmployee"
+    @cancel="showEmployeeForm = false" />
+
   <Table
     :columns="tableColumns"
     :data="processedData"
     @view="handleView"
     @edit="handleEdit"
     @delete="handleDelete" />
+
+  <div class="create-employee">
+    <button class="control" @click="openAddForm">Create Employee</button>
+  </div>
 </template>
 
 <script>
@@ -85,10 +97,11 @@ import Navbar from "./components/NavBar.vue";
 import Table from "./components/Table.vue";
 import employeeData from "./data/purple_cross_employees.json";
 import ConfirmDeleteModal from "./components/ConfirmDelete.vue";
+import EmployeeFormModal from "./components/EmployeeForm.vue";
 
 export default {
   name: "App",
-  components: { Navbar, Table, ConfirmDeleteModal },
+  components: { Navbar, Table, ConfirmDeleteModal, EmployeeFormModal },
   data() {
     return {
       employeesData: this.formatEmployeeData(employeeData),
@@ -114,6 +127,9 @@ export default {
 
       showDeleteConfirm: false,
       rowPendingDelete: null,
+
+      showEmployeeForm: false,
+      employeeToEdit: null,
     };
   },
   computed: {
@@ -155,26 +171,27 @@ export default {
       const today = new Date().setHours(0, 0, 0, 0);
 
       return data.map((emp, index) => {
-        const employmentDate = new Date(emp.dateOfEmployment).setHours(
-          0,
-          0,
-          0,
-          0
-        );
+        const employmentDateRaw = emp.dateOfEmployment || null;
+        const terminationDateRaw = emp.terminationDate || null;
+
+        const employmentDate = new Date(employmentDateRaw).setHours(0, 0, 0, 0);
         const terminationDate = emp.terminationDate
-          ? new Date(emp.terminationDate).setHours(0, 0, 0, 0)
+          ? new Date(terminationDateRaw).setHours(0, 0, 0, 0)
           : null;
 
         return {
           ...emp,
           originalIndex: index,
 
+          rawEmploymentDate: employmentDateRaw,
+          rawTerminationDate: terminationDateRaw,
+
           dateOfEmployment:
             employmentDate > today ? "Employed soon" : "Currently employed",
 
           terminationDate:
             terminationDate === null
-              ? "To be terminated"
+              ? "No date"
               : terminationDate > today
               ? "To be terminated"
               : "Terminated",
@@ -182,6 +199,7 @@ export default {
       });
     },
 
+    //filter and order menu behavior
     menuStyle(pos) {
       return { left: pos.x + "px", top: pos.y + "px" };
     },
@@ -245,17 +263,19 @@ export default {
       this.showSortMenu = false;
     },
 
+    //buttons behavior
     handleView(row) {
       console.log("Viewing:", row);
     },
     handleEdit(row) {
-      console.log("Editing:", row);
+      this.openEditForm(row);
     },
     handleDelete(row) {
       this.rowPendingDelete = row;
       this.showDeleteConfirm = true;
     },
 
+    //confirm Delete Modal
     confirmDelete() {
       this.employeesData = this.employeesData.filter(
         (emp) => emp !== this.rowPendingDelete
@@ -273,6 +293,56 @@ export default {
         this.showValueMenu = false;
         this.showSortMenu = false;
       }
+    },
+
+    //Edit employee modal
+    openAddForm() {
+      this.employeeToEdit = null;
+      this.showEmployeeForm = true;
+    },
+    openEditForm(row) {
+      this.employeeToEdit = row;
+      this.showEmployeeForm = true;
+    },
+    saveEmployee(data) {
+      const today = new Date().setHours(0, 0, 0, 0);
+      const rawEmploymentDate =
+        data.rawEmploymentDate || new Date().toISOString().slice(0, 10);
+
+      const employmentDate = new Date(rawEmploymentDate).setHours(0, 0, 0, 0);
+
+      const rawTerminationDate = data.rawTerminationDate || null;
+      const terminationDate = rawTerminationDate
+        ? new Date(rawTerminationDate).setHours(0, 0, 0, 0)
+        : null;
+
+      const formatted = {
+        ...data,
+        rawEmploymentDate,
+        rawTerminationDate,
+
+        dateOfEmployment:
+          employmentDate > today ? "Employed soon" : "Currently employed",
+
+        terminationDate:
+          terminationDate === null
+            ? "No date"
+            : terminationDate > today
+            ? "To be terminated"
+            : "Terminated",
+      };
+
+      if (this.employeeToEdit) {
+        Object.assign(this.employeeToEdit, formatted);
+      } else {
+        this.employeesData.forEach((emp) => emp.originalIndex++);
+
+        this.employeesData.unshift({
+          ...formatted,
+          originalIndex: 0,
+        });
+      }
+      this.showEmployeeForm = false;
     },
   },
 
@@ -379,6 +449,26 @@ export default {
   height: 18px;
   color: #6007a5;
 }
+
+.create-employee {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 1200;
+}
+
+.create-employee .control {
+  color: #f1f1f1;
+  padding: 10px 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+  transition: background 0.3s ease;
+}
+
+.create-employee .control:hover {
+  background: #4c0583;
+}
+
+/* -- Mobile -- */
 
 @media (max-width: 768px) {
   .toolbar {

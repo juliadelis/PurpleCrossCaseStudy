@@ -99,6 +99,7 @@ export default {
   width: 100%;
   overflow-x: auto;
   padding: 0 20px;
+  margin-bottom: 100px;
 }
 
 .table {
