@@ -9,7 +9,21 @@
           <th class="actions-header">Actions</th>
         </tr>
       </thead>
-      <tbody>
+      <tbody v-if="loading" class="skeleton-loader">
+        <tr v-for="row in rowsPerPage" :key="row">
+          <td v-for="col in columns" :key="col.label">
+            <div class="skeleton-box"></div>
+          </td>
+          <td>
+            <div class="action-btns">
+              <div class="skeleton-btn"></div>
+              <div class="skeleton-btn"></div>
+              <div class="skeleton-btn"></div>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+      <tbody v-else>
         <tr v-for="(row, rowI) in paginatedData" :key="rowI">
           <td
             v-for="(col, colI) in columns"
@@ -72,6 +86,10 @@ export default {
       type: Array,
       required: true,
     },
+    loading: {
+      type: Boolean,
+      required: true,
+    },
   },
   data() {
     return {
@@ -97,6 +115,58 @@ export default {
 </script>
 
 <style scoped>
+.skeleton-loader td {
+  padding: 20px 16px;
+}
+
+.skeleton-box {
+  width: 100%;
+  height: 20px;
+  background: #e0e0e0;
+  position: relative;
+  overflow: hidden;
+  border-radius: 4px;
+}
+
+.skeleton-btn {
+  width: 46px;
+  height: 28px;
+  background: #e0e0e0;
+  position: relative;
+  overflow: hidden;
+  border-radius: 4px;
+}
+
+.skeleton-box::before,
+.skeleton-btn::before {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: -150%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.5),
+    transparent
+  );
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    left: -150%;
+  }
+  50% {
+    left: 100%;
+  }
+  100% {
+    left: 150%;
+  }
+}
+
 .table-container {
   width: 100%;
   overflow-x: auto;

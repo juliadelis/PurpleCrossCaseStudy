@@ -113,6 +113,7 @@
   <Table
     :columns="tableColumns"
     :data="processedData"
+    :loading="loading"
     @view="handleView"
     @edit="handleEdit"
     @delete="handleDelete" />
@@ -141,7 +142,8 @@ export default {
   },
   data() {
     return {
-      employeesData: this.formatEmployeeData(employeeData),
+      employeesData: [],
+      loading: false,
       tableColumns: [
         { label: "Full Name", field: "fullName" },
         { label: "Occupation", field: "occupation" },
@@ -218,6 +220,20 @@ export default {
     },
   },
   methods: {
+    async fetchData() {
+      //simulating real fetch from actual API
+      this.loading = true;
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          resolve(this.formatEmployeeData(employeeData));
+        }, 1000);
+      });
+    },
+    async loadData() {
+      this.employeesData = await this.fetchData(); // Wait for fetched data
+      this.loading = false;
+    },
+
     formatEmployeeData(data) {
       const today = new Date().setHours(0, 0, 0, 0);
 
@@ -405,6 +421,7 @@ export default {
   },
 
   mounted() {
+    this.loadData();
     window.addEventListener("click", this.handleClickOutside);
   },
   beforeUnmount() {

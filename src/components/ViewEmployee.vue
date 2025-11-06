@@ -127,12 +127,14 @@ h2 {
 
 p {
   margin: 8px 4px;
+  text-align: left;
 }
 
 .title {
   font-weight: bold;
   color: #6007a5;
-  min-width: 120px;
+  min-width: 160px;
+  text-align: left;
 }
 
 .actions {
