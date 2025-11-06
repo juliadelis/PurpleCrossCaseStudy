@@ -98,8 +98,7 @@ export default {
 .table-container {
   width: 100%;
   overflow-x: auto;
-
-  padding: 20px;
+  padding: 0 20px;
 }
 
 .table {
