@@ -213,4 +213,12 @@ input.error {
   cursor: pointer;
   color: #1a1a1a;
 }
+
+/* -- Mobile -- */
+
+@media (max-width: 768px) {
+  .modal-overlay {
+    padding: 20px 0;
+  }
+}
 </style>

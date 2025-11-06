@@ -158,4 +158,10 @@ p {
   border-radius: 6px;
   cursor: pointer;
 }
+
+@media (max-width: 768px) {
+  .modal-overlay {
+    padding: 20px 0;
+  }
+}
 </style>

@@ -289,7 +289,9 @@ export default {
       this.showEmployeeViewModal = true;
     },
     handleEdit(row) {
-      this.openEditForm(row);
+      this.employeeToEdit = row;
+      this.showEmployeeForm = true;
+      this.showEmployeeViewModal = false;
     },
     handleDelete(row) {
       this.rowPendingDelete = row;
@@ -316,17 +318,13 @@ export default {
       }
     },
 
-    //Edit employee modal
+    //Add employee modal
     openAddForm() {
       this.employeeToEdit = null;
       this.showEmployeeForm = true;
       this.showEmployeeViewModal = false;
     },
-    openEditForm(row) {
-      this.employeeToEdit = row;
-      this.showEmployeeForm = true;
-      this.showEmployeeViewModal = false;
-    },
+
     saveEmployee(data) {
       const today = new Date().setHours(0, 0, 0, 0);
       const rawEmploymentDate =
@@ -356,8 +354,10 @@ export default {
       };
 
       if (this.employeeToEdit) {
+        //handling edit employee
         Object.assign(this.employeeToEdit, formatted);
       } else {
+        //handling add new employee
         this.employeesData.forEach((emp) => emp.originalIndex++);
 
         this.employeesData.unshift({
