@@ -18,15 +18,17 @@
             {{ row[col.field] }}
           </td>
           <td class="actions" data-label="Actions">
-            <button class="action-btn view" @click="$emit('view', row)">
-              View
-            </button>
-            <button class="action-btn edit" @click="$emit('edit', row)">
-              Edit
-            </button>
-            <button class="action-btn delete" @click="$emit('delete', row)">
-              Delete
-            </button>
+            <div class="action-btns">
+              <button class="action-btn view" @click="$emit('view', row)">
+                View
+              </button>
+              <button class="action-btn edit" @click="$emit('edit', row)">
+                Edit
+              </button>
+              <button class="action-btn delete" @click="$emit('delete', row)">
+                Delete
+              </button>
+            </div>
           </td>
         </tr>
       </tbody>
@@ -144,6 +146,11 @@ export default {
   gap: 8px;
   justify-content: flex-start;
   margin-bottom: -1px;
+}
+
+.action-btns {
+  display: flex;
+  gap: 8px;
 }
 
 .action-btn {
