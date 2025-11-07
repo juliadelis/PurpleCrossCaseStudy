@@ -7,7 +7,6 @@
 <script>
 export default {
   name: "Toast",
-  emits: ["import-json", "export-json", "export-csv"],
   data() {
     return {
       visible: false,

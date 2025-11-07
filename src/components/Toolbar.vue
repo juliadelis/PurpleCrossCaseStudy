@@ -145,6 +145,7 @@
 <script>
 export default {
   name: "Toolbar",
+  emits: ["import-json", "export-json", "export-csv"],
   props: {
     tableColumns: {
       type: Array,
