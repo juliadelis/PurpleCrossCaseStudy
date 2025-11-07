@@ -21,6 +21,57 @@
         </svg>
         <span>Sort</span>
       </div>
+      <label class="control" ref="importBtn" @click.stop>
+        <svg
+          width="13"
+          height="13"
+          viewBox="0 0 13 13"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M11.7941 6.19473V10.7618C11.7941 10.9566 11.636 11.1147 11.4412 11.1147H1.55882C1.364 11.1147 1.20588 10.9566 1.20588 10.7618V6.1912H0.5V10.7618C0.5 11.3456 0.975059 11.8206 1.55882 11.8206H11.4412C12.0249 11.8206 12.5 11.3456 12.5 10.7618V6.19473H11.7941Z"
+            fill="currentColor" />
+          <path
+            d="M3.14941 6.05882L6.57506 9.46824L10 6.05953L9.50235 5.55906L6.928 8.12141V0.5H6.22212V8.12141L3.64706 5.55835L3.14941 6.05882Z"
+            fill="currentColor" />
+          <path
+            d="M11.7941 6.19473V10.7618C11.7941 10.9566 11.636 11.1147 11.4412 11.1147H1.55882C1.364 11.1147 1.20588 10.9566 1.20588 10.7618V6.1912H0.5V10.7618C0.5 11.3456 0.975059 11.8206 1.55882 11.8206H11.4412C12.0249 11.8206 12.5 11.3456 12.5 10.7618V6.19473H11.7941Z"
+            stroke="currentColor"
+            stroke-linejoin="round" />
+          <path
+            d="M3.14941 6.05882L6.57506 9.46824L10 6.05953L9.50235 5.55906L6.928 8.12141V0.5H6.22212V8.12141L3.64706 5.55835L3.14941 6.05882Z"
+            stroke="currentColor"
+            stroke-linejoin="round" />
+        </svg>
+
+        <span>Import</span>
+        <input
+          type="file"
+          accept=".json"
+          @change="importJSON"
+          style="display: none" />
+      </label>
+
+      <div class="control" @click.stop="toggleExportMenu" ref="exportBtn">
+        <svg
+          width="13"
+          height="14"
+          viewBox="0 0 13 14"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M3.57694 4.74271L3.07012 4.25071L6.5 0.717773L9.92988 4.25071L9.42306 4.74201L6.85294 2.09495V9.69519H6.14706V2.09495L3.57694 4.74271ZM11.7941 6.9126V11.4797C11.7941 11.6745 11.636 11.8326 11.4412 11.8326H1.55882C1.364 11.8326 1.20588 11.6745 1.20588 11.4797V6.90907H0.5V11.4797C0.5 12.0634 0.975059 12.5385 1.55882 12.5385H11.4412C12.0249 12.5385 12.5 12.0634 12.5 11.4797V6.9126H11.7941Z"
+            fill="currentColor"
+            stroke="currentColor" />
+        </svg>
+        <span>Export</span>
+      </div>
+
+      <ul v-if="showExportMenu" class="menu" :style="menuStyle(exportMenuPos)">
+        <li @click.stop="exportJSON">JSON</li>
+        <li @click.stop="exportCSV">CSV (Excel)</li>
+        <li class="muted" @click.stop="closeExportMenu">Cancel</li>
+      </ul>
     </div>
     <ul v-if="showFilterMenu" class="menu" :style="menuStyle(filterMenuPos)">
       <li
@@ -183,6 +234,10 @@ export default {
       // Employee View Modal
       showEmployeeViewModal: false,
       employeeToView: null,
+
+      //export options
+      showExportMenu: false,
+      exportMenuPos: { x: 0, y: 0 },
     };
   },
   computed: {
@@ -334,6 +389,103 @@ export default {
       this.showSortMenu = false;
     },
 
+    //export menu logic
+
+    toggleExportMenu() {
+      if (this.showExportMenu) {
+        this.showExportMenu = false;
+        return;
+      }
+      this.exportMenuPos = this.getBtnPos(this.$refs.exportBtn);
+      this.showExportMenu = true;
+
+      //close other menus
+      this.showFilterMenu = false;
+      this.showValueMenu = false;
+      this.showSortMenu = false;
+    },
+
+    closeExportMenu() {
+      this.showExportMenu = false;
+    },
+
+    //import file validation
+    importJSON(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+
+      reader.onload = (e) => {
+        try {
+          const imported = JSON.parse(e.target.result);
+
+          if (!Array.isArray(imported)) {
+            alert("JSON must be an array of employees.");
+            return;
+          }
+
+          const formatted = this.formatEmployeeData(imported);
+
+          // Add new employees to the top of the list
+          formatted.forEach((emp) => {
+            const exists = this.employeesData.some(
+              (existing) =>
+                existing.code?.toLowerCase() === emp.code?.toLowerCase()
+            );
+
+            if (!exists) {
+              this.employeesData.unshift(emp);
+            }
+          });
+
+          this.employeesData.forEach((row, i) => {
+            row.originalIndex = i;
+          });
+
+          alert("✅ Imported successfully");
+        } catch {
+          alert("❌ Invalid JSON file");
+        }
+      };
+      reader.readAsText(file);
+    },
+
+    //export JSON
+    exportJSON() {
+      const blob = new Blob([JSON.stringify(this.employeesData, null, 2)], {
+        type: "application/json",
+      });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "employees.json";
+      a.click();
+      URL.revokeObjectURL(url);
+    },
+
+    //export csv
+
+    exportCSV() {
+      if (!this.employeesData.length) return;
+      const columns = Object.keys(this.employeesData[0]);
+      const header = columns.join(",");
+      const rows = this.employeesData.map((emp) =>
+        columns
+          .map((k) => `"${(emp[k] ?? "").toString().replace(/"/g, '""')}"`)
+          .join(",")
+      );
+      const csvContent = [header, ...rows].join("\n");
+
+      const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "employees.csv";
+      a.click();
+      URL.revokeObjectURL(url);
+    },
+
     //buttons behavior
     handleView(row) {
       this.employeeToView = row;
@@ -360,12 +512,18 @@ export default {
     },
 
     handleClickOutside(e) {
-      const btns = [this.$refs.filterBtn, this.$refs.sortBtn];
+      const btns = [
+        this.$refs.filterBtn,
+        this.$refs.sortBtn,
+        this.$refs.exportBtn,
+        this.$refs.importBtn,
+      ];
       const clickedBtn = btns.some((ref) => ref && ref.contains(e.target));
       if (!clickedBtn) {
         this.showFilterMenu = false;
         this.showValueMenu = false;
         this.showSortMenu = false;
+        this.showExportMenu = false;
       }
     },
 
