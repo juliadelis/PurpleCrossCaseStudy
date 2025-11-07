@@ -465,6 +465,7 @@ export default {
     prepareExportData() {
       return this.employeesData.map((emp) => {
         return {
+          code: emp.code,
           fullName: emp.fullName,
           occupation: emp.occupation,
           department: emp.department,
