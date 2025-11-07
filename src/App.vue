@@ -172,6 +172,7 @@
   <div class="create-employee">
     <button class="control" @click="openAddForm">Create Employee</button>
   </div>
+  <Toast ref="toast" />
 </template>
 
 <script>
@@ -181,6 +182,7 @@ import employeeData from "./data/purple_cross_employees.json";
 import ConfirmDeleteModal from "./components/ConfirmDelete.vue";
 import EmployeeFormModal from "./components/EmployeeForm.vue";
 import ViewEmployeeModal from "./components/ViewEmployee.vue";
+import Toast from "./components/Toast.vue";
 
 export default {
   name: "App",
@@ -190,6 +192,7 @@ export default {
     ConfirmDeleteModal,
     EmployeeFormModal,
     ViewEmployeeModal,
+    Toast,
   },
   data() {
     return {
@@ -421,7 +424,10 @@ export default {
           const imported = JSON.parse(e.target.result);
 
           if (!Array.isArray(imported)) {
-            alert("JSON must be an array of employees.");
+            this.$refs.toast.show(
+              "JSON must be an array of employees.",
+              "error"
+            );
             return;
           }
 
@@ -443,9 +449,12 @@ export default {
             row.originalIndex = i;
           });
 
-          alert("✅ Imported successfully");
+          this.$refs.toast.show(
+            "✅ Imported successfully. New employees added to top.",
+            "success"
+          );
         } catch {
-          alert("❌ Invalid JSON file");
+          this.$refs.toast.show("❌ Invalid JSON file", "error");
         }
       };
       reader.readAsText(file);
