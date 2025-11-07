@@ -515,7 +515,7 @@ export default {
       this.employeesData = this.employeesData.filter(
         (emp) => emp !== this.rowPendingDelete
       );
-
+      this.$refs.toast.show("✅ Employee deleted successfully", "success");
       this.rowPendingDelete = null;
       this.showDeleteConfirm = false;
     },
@@ -574,6 +574,7 @@ export default {
       if (this.employeeToEdit) {
         //handling edit employee
         Object.assign(this.employeeToEdit, formatted);
+        this.$refs.toast.show("✅ Employee saved successfully", "success");
       } else {
         //handling add new employee
         this.employeesData.forEach((emp) => emp.originalIndex++);
@@ -582,6 +583,7 @@ export default {
           ...formatted,
           originalIndex: 0,
         });
+        this.$refs.toast.show("✅ Employee created successfully", "success");
       }
       this.showEmployeeForm = false;
     },
