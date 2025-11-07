@@ -1,7 +1,7 @@
 <template>
   <div class="modal-overlay">
     <div class="modal-box">
-      <h2>{{ isEdit ? "Edit Employee" : "Create Employee" }}</h2>
+      <h2>View Employee</h2>
       <div class="modal-body">
         <div class="items">
           <div class="big-group">

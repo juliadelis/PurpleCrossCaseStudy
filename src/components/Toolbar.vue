@@ -1,7 +1,7 @@
 <template>
   <div class="toolbar">
     <div>
-      <H1>Employees</H1>
+      <h1>Employees</h1>
     </div>
     <div class="click-elements">
       <div class="control" @click.stop="toggleFilterMenu" ref="filterBtn">
