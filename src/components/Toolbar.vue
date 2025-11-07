@@ -328,7 +328,6 @@ export default {
   gap: 16px;
   align-items: center;
   justify-content: space-between;
-  flex-wrap: wrap;
   padding: 0px 20px;
   margin-top: 20px;
   position: relative;
@@ -436,6 +435,11 @@ export default {
   }
   .menu {
     min-width: 180px;
+  }
+
+  .click-elements {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
   }
 }
 </style>
