@@ -207,11 +207,19 @@ input.error {
 }
 
 .cancel-btn {
-  background: #e2e2e2;
+  background: #ddd;
   border: none;
   padding: 8px 14px;
   cursor: pointer;
   color: #1a1a1a;
+}
+
+.save-btn:hover {
+  background: #4c0583;
+}
+
+.cancel-btn:hover {
+  background: #d7d6d6;
 }
 
 /* -- Mobile -- */

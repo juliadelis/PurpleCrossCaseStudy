@@ -228,13 +228,23 @@ export default {
 .view {
   background-color: #6007a5;
 }
+.view:hover {
+  background: #4c0583;
+}
 
 .edit {
   background-color: #00abf4;
 }
+.edit:hover {
+  background-color: #047eb3;
+}
 
 .delete {
   background-color: #d9534f;
+}
+
+.delete:hover {
+  background: #a93531;
 }
 
 .pagination-controls,
@@ -252,7 +262,7 @@ export default {
 
 .pagination-buttons button {
   cursor: pointer;
-  padding: 6px 12px;
+  padding: 8px 14px;
   border-radius: 4px;
   border: none;
   color: #6007a5;

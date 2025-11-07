@@ -148,18 +148,25 @@ p {
   background: #ddd;
   color: #1a1a1a;
   border: none;
-  padding: 6px 14px;
+  padding: 8px 14px;
   border-radius: 6px;
   cursor: pointer;
+}
+.cancel:hover {
+  background: #d7d6d6;
 }
 
 .edit {
   background: #6007a5;
   color: white;
   border: none;
-  padding: 6px 14px;
+  padding: 8px 14px;
   border-radius: 6px;
   cursor: pointer;
+}
+
+.edit:hover {
+  background: #4c0583;
 }
 
 @media (max-width: 768px) {

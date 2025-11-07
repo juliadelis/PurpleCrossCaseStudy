@@ -313,9 +313,19 @@ export default {
       }
     },
   },
+  watch: {
+    filterColumn(newCol, oldCol) {
+      if (oldCol && newCol && oldCol.field !== newCol.field) {
+        //only clear if it has already one selected
+        this.$emit("update:filterValue", null);
+      }
+    },
+  },
+
   mounted() {
     window.addEventListener("click", this.handleClickOutside);
   },
+
   beforeUnmount() {
     window.removeEventListener("click", this.handleClickOutside);
   },
@@ -372,6 +382,7 @@ export default {
   cursor: pointer;
   white-space: nowrap;
   list-style-type: none;
+  gap: 10px;
 }
 .menu li:hover {
   background: #f7f2ff;

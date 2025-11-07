@@ -60,17 +60,25 @@ export default {
   background: #ddd;
   color: #1a1a1a;
   border: none;
-  padding: 6px 14px;
+  padding: 8px 14px;
   border-radius: 6px;
   cursor: pointer;
+}
+
+.cancel:hover {
+  background: #d7d6d6;
 }
 
 .confirm {
   background: #d9534f;
   color: white;
   border: none;
-  padding: 6px 14px;
+  padding: 8px 14px;
   border-radius: 6px;
   cursor: pointer;
+}
+
+.confirm:hover {
+  background: #a93531;
 }
 </style>
