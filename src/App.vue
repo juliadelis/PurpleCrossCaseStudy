@@ -460,9 +460,24 @@ export default {
       reader.readAsText(file);
     },
 
+    //prepare export data
+
+    prepareExportData() {
+      return this.employeesData.map((emp) => {
+        return {
+          fullName: emp.fullName,
+          occupation: emp.occupation,
+          department: emp.department,
+          dateOfEmployment: emp.rawEmploymentDate || null, // Export the real date
+          terminationDate: emp.rawTerminationDate || null, // Export real date or empty
+        };
+      });
+    },
+
     //export JSON
     exportJSON() {
-      const blob = new Blob([JSON.stringify(this.employeesData, null, 2)], {
+      const cleanData = this.prepareExportData();
+      const blob = new Blob([JSON.stringify(cleanData, null, 2)], {
         type: "application/json",
       });
       const url = URL.createObjectURL(blob);
@@ -476,10 +491,11 @@ export default {
     //export csv
 
     exportCSV() {
-      if (!this.employeesData.length) return;
-      const columns = Object.keys(this.employeesData[0]);
+      const cleanData = this.prepareExportData();
+      if (!cleanData.length) return;
+      const columns = Object.keys(cleanData[0]);
       const header = columns.join(",");
-      const rows = this.employeesData.map((emp) =>
+      const rows = cleanData.map((emp) =>
         columns
           .map((k) => `"${(emp[k] ?? "").toString().replace(/"/g, '""')}"`)
           .join(",")
